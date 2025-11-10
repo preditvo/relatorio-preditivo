@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Relatório Preditivo Mecânico</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Cabeçalho -->
+        <header class="report-header">
+            <div class="logo-section">
+                <div class="logo-container" id="logoContainer">
+                    <img id="logoImage" src="" alt="Logo" style="display: none;">
+                    <div class="logo-placeholder" id="logoPlaceholder">
+                        <span>LOGO</span>
+                    </div>
+                </div>
+                <input type="file" id="logoUpload" accept="image/*" style="display: none;" onchange="handleLogoUpload(event)">
+                <button onclick="document.getElementById('logoUpload').click()" class="btn-upload-small">
+                    📤 Upload Logo
+                </button>
+            </div>
+            <div class="title-section">
+                <h1>RELATÓRIO PREDITIVO MECÂNICA</h1>
+                <h2>ANÁLISE DE VIBRAÇÃO</h2>
+            </div>
+            <div class="report-info">
+                <div class="report-number">
+                    <label>Nº:</label>
+                    <input type="text" id="reportNumber" placeholder="Ex: 25/252">
+                </div>
+                <div class="alarm-level">
+                    <label>Nível de Alarme Atual:</label>
+                    <select id="alarmLevel" onchange="updateAlarmColor()">
+                        <option value="normal">NORMAL</option>
+                        <option value="alerta">ALERTA</option>
+                        <option value="critico">CRÍTICO</option>
+                    </select>
+                    <div id="alarmIndicator" class="alarm-indicator normal"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Informações do Equipamento -->
+        <section class="equipment-info">
+            <div class="info-grid">
+                <div class="info-row">
+                    <div class="info-field">
+                        <label>Data:</label>
+                        <input type="date" id="reportDate">
+                    </div>
+                    <div class="info-field">
+                        <label>Inspetor:</label>
+                        <input type="text" id="inspector" placeholder="Nome do Inspetor">
+                    </div>
+                    <div class="info-field">
+                        <label>Número do TAG:</label>
+                        <input type="text" id="tagNumber" placeholder="Ex: 4400255387">
+                    </div>
+                    <div class="info-field">
+                        <label>Ordem:</label>
+                        <input type="text" id="orderNumber" placeholder="Número da Ordem">
+                    </div>
+                </div>
+                <div class="info-row">
+                    <div class="info-field">
+                        <label>Equipamento:</label>
+                        <input type="text" id="equipment" placeholder="Nome do Equipamento">
+                    </div>
+                    <div class="info-field">
+                        <label>Componente:</label>
+                        <input type="text" id="component" placeholder="Componente">
+                    </div>
+                    <div class="info-field">
+                        <label>TAG:</label>
+                        <input type="text" id="tag" placeholder="TAG">
+                    </div>
+                    <div class="info-field">
+                        <label>Defeitos:</label>
+                        <input type="text" id="defects" placeholder="Descrição dos Defeitos">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Últimas Medições -->
+        <section class="measurements">
+            <h3>Últimas Medições</h3>
+            <table class="measurements-table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Valor (mm/s)</th>
+                        <th>Alarme</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="measurementsTable">
+                    <!-- Linhas serão adicionadas dinamicamente -->
+                </tbody>
+            </table>
+            <button onclick="addMeasurement()" class="btn-add">+ Adicionar Medição</button>
+        </section>
+
+        <!-- Técnica Preditiva Integrada -->
+        <section class="predictive-technique">
+            <h3>Técnica Preditiva Integrada</h3>
+            <div class="charts-container">
+                <div class="chart-box">
+                    <canvas id="vibrationChart"></canvas>
+                    <div class="chart-controls">
+                        <button onclick="generateChart('vibration')" class="btn-chart">Gerar Gráfico de Vibração</button>
+                    </div>
+                </div>
+                <div class="chart-box">
+                    <canvas id="spectrumChart"></canvas>
+                    <div class="chart-controls">
+                        <button onclick="generateChart('spectrum')" class="btn-chart">Gerar Espectro</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Upload de Imagens Adicionais -->
+            <div class="image-upload-section">
+                <h4>Imagens do Equipamento</h4>
+                <input type="file" id="equipmentImages" accept="image/*" multiple style="display: none;" onchange="handleEquipmentImages(event)">
+                <button onclick="document.getElementById('equipmentImages').click()" class="btn-upload">
+                    📷 Adicionar Imagens
+                </button>
+                <div id="imagePreviewContainer" class="image-preview-container">
+                    <!-- Imagens aparecerão aqui -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Recomendações -->
+        <section class="recommendations">
+            <h3>Recomendações</h3>
+            <div class="recommendation-box" id="autoRecommendations">
+                <!-- Recomendações automáticas aparecerão aqui -->
+            </div>
+            <h4>Ações Personalizadas:</h4>
+            <textarea id="customRecommendations" placeholder="Digite recomendações adicionais aqui..."></textarea>
+        </section>
+
+        <!-- Referências de Alarmes -->
+        <section class="alarm-references">
+            <h3>Referências Alarmes</h3>
+            <table class="alarm-table">
+                <thead>
+                    <tr>
+                        <th>Ponto</th>
+                        <th>Normal (mm/s)</th>
+                        <th>Alerta (mm/s)</th>
+                        <th>Alto Risco (mm/s)</th>
+                    </tr>
+                </thead>
+                <tbody id="alarmReferencesTable">
+                    <!-- Linhas serão adicionadas dinamicamente -->
+                </tbody>
+            </table>
+            <button onclick="addAlarmReference()" class="btn-add">+ Adicionar Referência</button>
+        </section>
+
+        <!-- Botões de Ação -->
+        <div class="action-buttons">
+            <button onclick="generatePDF()" class="btn-generate">📄 Gerar Relatório PDF</button>
+            <button onclick="saveData()" class="btn-save">💾 Salvar Dados</button>
+            <button onclick="loadData()" class="btn-load">📁 Carregar Dados</button>
+            <button onclick="clearForm()" class="btn-clear">🗑️ Limpar Formulário</button>
+        </div>
+    </div>
+
+    <!-- Loading overlay para geração de PDF -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Gerando PDF... Por favor, aguarde.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
